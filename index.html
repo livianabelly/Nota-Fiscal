@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Pedido de Compra - Livraria Páginas & </title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="control-panel">
+  <div class="panel-header">
+    <div class="panel-icon">📚</div>
+    <div>
+      <h1>Emissão de Pedido de Compra — Livraria Páginas &amp;</h1>
+      <p>Preencha os dados abaixo e gere o documento</p>
+    </div>
+  </div>
+
+  <div class="field-group fg-med">
+    <label>Nº do Pedido</label>
+    <input id="f-num" value="PC-2025-0112">
+  </div>
+  <div class="field-group fg-sm">
+    <label>Data de Emissão</label>
+    <input id="f-data" type="date">
+  </div>
+  <div class="field-group fg-med">
+    <label>Seção / Departamento</label>
+    <input id="f-cc" value="Acervo — Literatura Geral">
+  </div>
+  <div class="field-group fg-wide">
+    <label>Fornecedor / Distribuidora</label>
+    <input id="f-forn" value="Distribuidora Nacional do Livro Ltda.">
+  </div>
+  <div class="field-group fg-med">
+    <label>CNPJ do Fornecedor</label>
+    <input id="f-cnpj" value="34.567.890/0001-22">
+  </div>
+
+  <div class="items-section">
+    <label>Itens do Pedido — Livros</label>
+    <div style="overflow-x:auto">
+      <table class="items-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th style="min-width:260px">Título / Autor</th>
+            <th style="min-width:90px">Editora</th>
+            <th style="min-width:70px">Qtd.</th>
+            <th style="min-width:110px">Vlr. Unit. (R$)</th>
+          </tr>
+        </thead>
+        <tbody id="items-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="field-group fg-wide">
+    <label>Solicitante</label>
+    <input id="f-sol" value="Mariana Costa — Gerente de Acervo">
+  </div>
+  <div class="field-group fg-wide">
+    <label>Aprovador</label>
+    <input id="f-apr" value="Luís Fernando Abreu — Diretor Geral">
+  </div>
+  <div class="field-group" style="flex:1 1 100%">
+    <label>Observações</label>
+    <textarea id="f-obs">Todos os exemplares deverão ser entregues com nota fiscal eletrônica e em embalagem protetora individual. Prazo de entrega: até 10 dias úteis. Prioridade de reposição para títulos com menos de 3 unidades em estoque. Em caso de esgotamento de algum título, favor contatar: acervo@paginasecia.com.br.</textarea>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="gerar()">📄 Visualizar Documento</button>
+    <button class="btn btn-outline" onclick="gerar(true)">⬇ Baixar PDF</button>
+    <button class="btn btn-ghost"   onclick="gerar(false, true)">🖨 Imprimir</button>
+  </div>
+</div>
+
+<!-- Documento Gerado -->
+<div id="relatorio">
+  <div class="doc">
+
+    <div class="doc-header">
+      <div class="header-inner">
+        <div class="brand">
+          <div class="brand-emblem">📚</div>
+          <div>
+            <div class="brand-name">Páginas &amp;</div>
+            <div class="brand-subtitle">Livraria desde 1987</div>
+          </div>
+        </div>
+        <div class="header-meta">
+          <strong>Pedido de Compra</strong>
+          CNPJ: 11.222.333/0001-44<br>
+          Rua das Letras, 847 — Centro — Mogi das Cruzes/SP<br>
+          (55) 3211-4455 · acervo@paginas.com.br
+        </div>
+      </div>
+    </div>
+    <div class="ornament-bar"></div>
+    <div class="ornament-thin"></div>
+
+    <div class="doc-body">
+
+      <div class="doc-title-row">
+        <div class="doc-title">Pedido de Compra</div>
+        <div class="doc-badge" id="r-num"></div>
+      </div>
+
+      <div class="info-grid">
+        <div class="info-box">
+          <div class="info-label">Emissão</div>
+          <p>
+            <strong>Data:</strong> <span id="r-data"></span><br>
+            <strong>Seção:</strong> <span id="r-cc"></span>
+          </p>
+        </div>
+        <div class="info-box">
+          <div class="info-label">Fornecedor</div>
+          <p>
+            <strong><span id="r-forn"></span></strong><br>
+            CNPJ: <span id="r-cnpj"></span>
+          </p>
+        </div>
+        <div class="info-box">
+          <div class="info-label">Entrega</div>
+          <p>
+            <strong>Prazo:</strong> 10 dias úteis<br>
+            <strong>Local:</strong> Depósito Central<br>
+            <strong>Cond. pgto:</strong> 30 dias
+          </p>
+        </div>
+      </div>
+
+      <div class="divider">✦ Relação de Títulos ✦</div>
+
+      <table class="doc-items-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Título / Autor</th>
+            <th>Editora</th>
+            <th>Qtd.</th>
+            <th>Vlr. Unitário</th>
+            <th>Vlr. Total</th>
+          </tr>
+        </thead>
+        <tbody id="r-items"></tbody>
+        <tfoot>
+          <tr>
+            <td colspan="5">Valor Total do Pedido</td>
+            <td id="r-total"></td>
+          </tr>
+        </tfoot>
+      </table>
+
+      <div class="obs-box">
+        <div class="info-label">Observações</div>
+        <p id="r-obs"></p>
+      </div>
+
+      <div class="sig-row">
+        <div class="sig-block">
+          <div class="sig-space"></div>
+          <div class="sig-line"></div>
+          <div class="sig-name" id="r-sol"></div>
+          <div class="sig-role">Solicitante</div>
+          <div class="sig-stamp">Assinatura &amp; Carimbo</div>
+        </div>
+        <div class="sig-block">
+          <div class="sig-space"></div>
+          <div class="sig-line"></div>
+          <div class="sig-name" id="r-apr"></div>
+          <div class="sig-role">Aprovador</div>
+          <div class="sig-stamp">Assinatura &amp; Carimbo</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="doc-footer">
+      <p><span class="gold">Páginas &amp;</span> — Livraria &amp; · Mogi das Cruzes/SP</p>
+      <p>Documento gerado eletronicamente em <span id="r-now" class="gold"></span></p>
+    </div>
+
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
